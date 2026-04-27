@@ -1,0 +1,19 @@
+[
+  {
+    "name": "Bondi Icebergs",
+    "lat": -33.8915,
+    "lng": 151.2767,
+    "notes": "Iconic ocean pool, great sunrise spot",
+    "videos": [
+      "https://youtube.com/",
+      "https://tiktok.com/"
+    ]
+  },
+  {
+    "name": "Bundeena Beach",
+    "lat": -34.083,
+    "lng": 151.150,
+    "notes": "Quiet beach, hidden gem",
+    "videos": []
+  }
+]
