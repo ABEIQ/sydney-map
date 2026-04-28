@@ -10,10 +10,20 @@
     ]
   },
   {
+  "name": "Waterfall Way",
+  "lat": -30.4224577,
+  "lng": 152.850681,
+  "notes": "",
+  "videos": [
+    "https://vt.tiktok.com/ZSH3JCJuR/"
+  ]
+  },
+  {
     "name": "Bundeena Beach",
     "lat": -34.083,
     "lng": 151.150,
     "notes": "Quiet beach, hidden gem",
     "videos": []
   }
+  
 ]
