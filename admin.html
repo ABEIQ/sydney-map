@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Location</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    #map {
+      height: 300px;
+      margin-top: 15px;
+    }
+
+    #output {
+      margin-top: 20px;
+      background: #f5f5f5;
+      padding: 10px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Add New Location</h2>
+
+<input id="search" placeholder="Search location (e.g. Bondi Icebergs)" />
+<button onclick="searchLocation()">Search</button>
+
+<div id="map"></div>
+
+<input id="name" placeholder="Name" />
+<textarea id="notes" placeholder="Notes"></textarea>
+<textarea id="videos" placeholder="Video links (one per line)"></textarea>
+
+<button onclick="generateJSON()">Generate JSON</button>
+
+<div id="output"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+let map = L.map('map').setView([-33.8688, 151.2093], 11);
+let marker;
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+}).addTo(map);
+
+let selectedLat = null;
+let selectedLng = null;
+
+function searchLocation() {
+  const query = document.getElementById('search').value;
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(results => {
+      if (!results.length) {
+        alert("No results found");
+        return;
+      }
+
+      const place = results[0];
+
+      selectedLat = parseFloat(place.lat);
+      selectedLng = parseFloat(place.lon);
+
+      if (marker) map.removeLayer(marker);
+
+      marker = L.marker([selectedLat, selectedLng]).addTo(map);
+      map.setView([selectedLat, selectedLng], 15);
+
+      document.getElementById('name').value = place.display_name.split(',')[0];
+    });
+}
+
+function generateJSON() {
+  if (!selectedLat || !selectedLng) {
+    alert("Search and select a location first");
+    return;
+  }
+
+  const name = document.getElementById('name').value;
+  const notes = document.getElementById('notes').value;
+
+  const videosRaw = document.getElementById('videos').value;
+  const videos = videosRaw
+    .split('\n')
+    .map(v => v.trim())
+    .filter(v => v.length > 0);
+
+  const obj = {
+    name,
+    lat: selectedLat,
+    lng: selectedLng,
+    notes,
+    videos
+  };
+
+  document.getElementById('output').textContent =
+    JSON.stringify(obj, null, 2) + ",";
+}
+</script>
+
+</body>
+</html>
